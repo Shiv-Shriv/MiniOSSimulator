@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.ArrayList;
 import model.Process;
 
-public class SJF implements Scheduler{
+public class SJF implements Scheduler {
+
     @Override
-    public void schedule(List<Process> processes) {
+    public List<GanttChartEntry> schedule(List<Process> processes) {
 
         List<Process> pending = new ArrayList<>(processes);
+        List<GanttChartEntry> chart = new ArrayList<>();
 
         int currentTime = 0;
         int completed = 0;
@@ -19,6 +21,7 @@ public class SJF implements Scheduler{
             Process shortest = null;
 
             for (Process p : pending) {
+
                 if (p.getCompletionTime() == 0 &&
                     p.getArrivalTime() <= currentTime) {
 
@@ -34,7 +37,12 @@ public class SJF implements Scheduler{
                 continue;
             }
 
+            int startTime = currentTime;
             currentTime += shortest.getBurstTime();
+
+            chart.add(new GanttChartEntry(
+                shortest.getProcessId(), startTime, currentTime
+            ));
 
             shortest.setCompletionTime(currentTime);
             shortest.setTurnaroundTime(currentTime - shortest.getArrivalTime());
@@ -42,5 +50,7 @@ public class SJF implements Scheduler{
 
             completed++;
         }
+
+        return chart;
     }
 }

@@ -3,6 +3,6 @@ import java.util.List;
 import model.Process;
 
 public interface Scheduler {
-    void schedule(List<Process> processes);
+    List<GanttChartEntry> schedule(List<Process> processes);
     
 }
