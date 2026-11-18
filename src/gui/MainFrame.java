@@ -18,7 +18,6 @@ public class MainFrame extends JFrame {
 
         setLayout(new BorderLayout());
 
-    
         JPanel sidebar = new JPanel();
         sidebar.setBackground(new Color(30, 35, 50));
         sidebar.setPreferredSize(new Dimension(230, 700));
@@ -30,7 +29,6 @@ public class MainFrame extends JFrame {
 
         sidebar.add(heading);
 
-       
         String[] sections = {
             "Dashboard",
             "CPU Scheduling",
@@ -38,6 +36,9 @@ public class MainFrame extends JFrame {
             "Deadlock Detection",
             "Multithreading"
         };
+
+        cardLayout = new CardLayout();
+        contentPanel = new JPanel(cardLayout);
 
         for (String section : sections) {
 
@@ -55,19 +56,14 @@ public class MainFrame extends JFrame {
             sidebar.add(button);
         }
 
-        
-        cardLayout = new CardLayout();
-        contentPanel = new JPanel(cardLayout);
+        // Dashboard
+        contentPanel.add(createDashboard(), "Dashboard");
 
+        // Main modules
         contentPanel.add(new SchedulingPanel(), "CPU Scheduling");
-
         contentPanel.add(new MemoryPanel(), "Memory Allocation");
-
         contentPanel.add(new DeadlockPanel(), "Deadlock Detection");
-        
         contentPanel.add(new ThreadPanel(), "Multithreading");
-
-        
 
         add(sidebar, BorderLayout.WEST);
         add(contentPanel, BorderLayout.CENTER);
@@ -75,16 +71,54 @@ public class MainFrame extends JFrame {
         cardLayout.show(contentPanel, "Dashboard");
     }
 
-    private void addPage(String name, String heading) {
+    private JPanel createDashboard() {
 
-        JPanel panel = new JPanel(new BorderLayout());
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(new Color(245, 247, 250));
+        panel.setBorder(BorderFactory.createEmptyBorder(35, 35, 35, 35));
 
-        JLabel title = new JLabel(heading, SwingConstants.CENTER);
+        JLabel title = new JLabel("Welcome to Mini OS Simulator");
         title.setFont(new Font("Arial", Font.BOLD, 28));
 
-        panel.add(title, BorderLayout.CENTER);
+        JLabel description = new JLabel(
+            "A Java-based simulation of fundamental Operating System concepts."
+        );
+        description.setFont(new Font("Arial", Font.PLAIN, 15));
 
-        contentPanel.add(panel, name);
+        panel.add(title);
+        panel.add(Box.createVerticalStrut(15));
+        panel.add(description);
+        panel.add(Box.createVerticalStrut(40));
+
+        String[] modules = {
+            "CPU Scheduling",
+            "Memory Allocation",
+            "Deadlock Detection",
+            "Multithreading"
+        };
+
+        String[] descriptions = {
+            "Simulate FCFS, SJF and Round Robin scheduling algorithms.",
+            "Explore First Fit, Best Fit and Worst Fit memory allocation.",
+            "Check system safety using Banker's Algorithm.",
+            "Explore Producer-Consumer synchronization using Java threads."
+        };
+
+        for (int i = 0; i < modules.length; i++) {
+
+            JLabel moduleTitle = new JLabel(modules[i]);
+            moduleTitle.setFont(new Font("Arial", Font.BOLD, 18));
+
+            JLabel moduleDescription = new JLabel(descriptions[i]);
+            moduleDescription.setFont(new Font("Arial", Font.PLAIN, 14));
+
+            panel.add(moduleTitle);
+            panel.add(Box.createVerticalStrut(5));
+            panel.add(moduleDescription);
+            panel.add(Box.createVerticalStrut(30));
+        }
+
+        return panel;
     }
 }
