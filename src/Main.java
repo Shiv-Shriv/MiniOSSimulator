@@ -7,9 +7,34 @@ import memory.MemoryAllocator;
 import model.MemoryBlock;
 import model.Process;
 import scheduler.*;
+import threads.Consumer;
+import threads.Producer;
+import threads.SharedBuffer;
 import deadlock.*;
+import threads.*;
+import gui.MainFrame;
 
 public class Main {
+
+    public static void testMultithreading() {
+
+    SharedBuffer buffer = new SharedBuffer();
+
+    Thread producer = new Thread(new Producer(buffer));
+    Thread consumer = new Thread(new Consumer(buffer));
+
+    producer.start();
+    consumer.start();
+
+    try {
+        producer.join();
+        consumer.join();
+    } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+    }
+}
+
+
 
     public static void testDeadlock() {
 
@@ -94,6 +119,10 @@ public class Main {
     }
 
     public static void main(String[] args) {
+
+
+        System.out.println("\n========== PRODUCER-CONSUMER ==========");
+        testMultithreading();
 
         testDeadlock();
 
