@@ -18,10 +18,13 @@ public class Main {
 
     public static void testMultithreading() {
 
-    SharedBuffer buffer = new SharedBuffer();
+    SharedBuffer buffer = new SharedBuffer(5, System.out::println);
 
-    Thread producer = new Thread(new Producer(buffer));
-    Thread consumer = new Thread(new Consumer(buffer));
+    Thread producer = new Thread(new Producer(buffer, 10, 300));
+    Thread consumer = new Thread(new Consumer(buffer, 10, 500));
+
+    producer.start();
+    consumer.start();
 
     producer.start();
     consumer.start();
@@ -120,41 +123,10 @@ public class Main {
 
     public static void main(String[] args) {
 
-
-        System.out.println("\n========== PRODUCER-CONSUMER ==========");
-        testMultithreading();
-
-        testDeadlock();
-
-        testMemoryAllocation();
-
-        List<Process> fcfsProcesses = createProcesses();
-        Scheduler fcfs = new FCFS();
-        List<GanttChartEntry> fcfsChart = fcfs.schedule(fcfsProcesses);
-
-        System.out.println("\n========== FCFS ==========");
-        new SchedulingResult(fcfsProcesses).displayResults(fcfsProcesses);
-        
-        JFrame frame = new JFrame("FCFS Gantt Chart");
-        frame.add(new GanttChartPanel(fcfsChart));
-        frame.setSize(800, 200);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
+    SwingUtilities.invokeLater(() -> {
+        MainFrame frame = new MainFrame();
         frame.setVisible(true);
+    });
 
-
-        List<Process> sjfProcesses = createProcesses();
-        Scheduler sjf = new SJF();
-        List<GanttChartEntry> sjFChart = sjf.schedule(sjfProcesses);
-
-        System.out.println("\n========== SJF ==========");
-        new SchedulingResult(sjfProcesses).displayResults(sjfProcesses);
-
-        List<Process> rrProcesses = createProcesses();
-        Scheduler rr = new RoundRobin(2);
-        List<GanttChartEntry> rrChart = rr.schedule(rrProcesses);
-
-        System.out.println("\n========== ROUND ROBIN ==========");
-        new SchedulingResult(rrProcesses).displayResults(rrProcesses);
-    }
+}
 }

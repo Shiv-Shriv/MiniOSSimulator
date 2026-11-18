@@ -1,3 +1,4 @@
+
 package threads;
 
 import java.util.LinkedList;
@@ -6,7 +7,15 @@ import java.util.Queue;
 public class SharedBuffer {
 
     private Queue<Integer> buffer = new LinkedList<>();
-    private int capacity = 5;
+    private int capacity;
+
+    private java.util.function.Consumer<String> logger;
+
+    public SharedBuffer(int capacity,
+                        java.util.function.Consumer<String> logger) {
+        this.capacity = capacity;
+        this.logger = logger;
+    }
 
     public synchronized void produce(int item) throws InterruptedException {
 
@@ -15,7 +24,7 @@ public class SharedBuffer {
         }
 
         buffer.add(item);
-        System.out.println("Produced: " + item);
+        logger.accept("Produced: " + item);
 
         notifyAll();
     }
@@ -27,7 +36,7 @@ public class SharedBuffer {
         }
 
         int item = buffer.poll();
-        System.out.println("Consumed: " + item);
+        logger.accept("Consumed: " + item);
 
         notifyAll();
 
